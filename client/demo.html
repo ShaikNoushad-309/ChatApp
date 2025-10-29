@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatApp - Connect Instantly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray);
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .brand::before {
+            content: "💬";
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links button {
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        #login-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        #login-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        #signup-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        #signup-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            text-align: center;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="1000,100 1000,0 0,100"></polygon></svg>');
+            background-size: cover;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        #cta-login {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+
+        #cta-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Demo Section */
+        .demo {
+            background-color: white;
+            position: relative;
+        }
+
+        .demo-chat-container {
+            display: flex;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .demo-sidebar {
+            width: 35%;
+            background: var(--light);
+            border-right: 1px solid var(--light-gray);
+        }
+
+        .demo-contact {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .demo-contact:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .demo-contact.active {
+            background: rgba(67, 97, 238, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .last-msg {
+            font-size: 0.85rem;
+            color: var(--gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+
+        .demo-chat-area {
+            width: 65%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .demo-chat-header {
+            padding: 1rem;
+            background: white;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .demo-messages {
+            flex: 1;
+            padding: 1.5rem;
+            background: #f9fafc;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .message {
+            max-width: 70%;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .message p {
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .message.received p {
+            background: white;
+            border-top-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .message.sent {
+            margin-left: auto;
+        }
+
+        .message.sent p {
+            background: var(--primary);
+            color: white;
+            border-top-right-radius: 5px;
+        }
+
+        .time {
+            font-size: 0.75rem;
+            color: var(--gray);
+            display: block;
+            text-align: right;
+        }
+
+        .demo-input-area {
+            display: flex;
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .demo-input-area input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 30px;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .demo-input-area button {
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .demo-input-area button:hover {
+            background: var(--primary-dark);
+        }
+
+        .demo-overlay-text {
+            text-align: center;
+            margin-top: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Features Section */
+        #features {
+            background: var(--light);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature h3 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .feature h3::before {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .feature:nth-child(1) h3::before {
+            content: '⚡';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .feature:nth-child(2) h3::before {
+            content: '👥';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .feature:nth-child(3) h3::before {
+            content: '🔒';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .footer-links a {
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--success);
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .demo-chat-container {
+                flex-direction: column;
+            }
+
+            .demo-sidebar, .demo-chat-area {
+                width: 100%;
+            }
+
+            .demo-sidebar {
+                max-height: 200px;
+                overflow-y: auto;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero {
+                padding: 80px 0;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav>
+    <div class="brand">ChatApp</div>
+    <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+        <button id="login-btn">Login</button>
+        <button id="signup-btn">Sign Up</button>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="about">
+    <div class="container">
+        <h1>Connect with Friends Instantly</h1>
+        <p>Real-time messaging made simple and secure. Join millions of users worldwide who trust ChatApp for their daily conversations.</p>
+        <button id="cta-login">Start Chatting Now</button>
+    </div>
+</section>
+
+<!-- Live Demo Section -->
+<section class="demo">
+    <div class="container">
+        <h2>See How It Works</h2>
+
+        <!-- Demo Chat Interface -->
+        <div class="demo-chat-container">
+            <!-- Chat Sidebar -->
+            <div class="demo-sidebar">
+                <div class="demo-contact active">
+                    <div class="avatar">JS</div>
+                    <div class="contact-info">
+                        <span class="name">John Smith</span>
+                        <span class="last-msg">See how easy it is to chat!</span>
+                    </div>
+                </div>
+                <div class="demo-contact">
+                    <div class="avatar">SD</div>
+                    <div class="contact-info">
+                        <span class="name">Sarah Davis</span>
+                        <span class="last-msg">Try sending a message!</span>
+                    </div>
+                </div>
+                <div class="demo-contact">
+                    <div class="avatar">MJ</div>
+                    <div class="contact-info">
+                        <span class="name">Mike Johnson</span>
+                        <span class="last-msg">Let's catch up soon!</span>
+                    </div>
+                </div>
+                <div class="demo-contact">
+                    <div class="avatar">EP</div>
+                    <div class="contact-info">
+                        <span class="name">Emma Parker</span>
+                        <span class="last-msg">Did you see the new features?</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Main Area -->
+            <div class="demo-chat-area">
+                <div class="demo-chat-header">
+                    <div class="avatar">JS</div>
+                    <span class="name">John Smith</span>
+                </div>
+
+                <div class="demo-messages">
+                    <div class="message received">
+                        <p>Welcome to ChatApp! This is what your conversations will look like.</p>
+                        <span class="time">2:30 PM</span>
+                    </div>
+                    <div class="message sent">
+                        <p>Looks great! How do I get started?</p>
+                        <span class="time">2:31 PM</span>
+                    </div>
+                    <div class="message received">
+                        <p>Just click the login button above to create your account and start connecting with friends!</p>
+                        <span class="time">2:32 PM</span>
+                    </div>
+                    <div class="message received">
+                        <p>You'll be able to send messages, share files, and even make voice calls!</p>
+                        <span class="time">2:33 PM</span>
+                    </div>
+                </div>
+
+                <div class="demo-input-area">
+                    <input type="text" placeholder="Sign up to send messages..." disabled>
+                    <button disabled>Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-overlay-text">
+            <p>🔒 Sign up to unlock all features</p>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features">
+    <div class="container">
+        <h2>Powerful Features</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <h3>Real-time Messaging</h3>
+                <p>Instant message delivery with typing indicators and read receipts. Never miss a conversation with our lightning-fast technology.</p>
+            </div>
+            <div class="feature">
+                <h3>Contact Management</h3>
+                <p>Easily add, organize, and group your contacts. Create custom lists for family, friends, and colleagues.</p>
+            </div>
+            <div class="feature">
+                <h3>Secure & Private</h3>
+                <p>Your conversations are protected with end-to-end encryption. We never store or share your personal data.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="brand">ChatApp</div>
+            <p>Connecting people across the globe with secure, real-time messaging.</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#support">Support</a>
+                <a href="#careers">Careers</a>
+            </div>
+            <div class="copyright">
+                &copy; 2023 ChatApp. All rights reserved.
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
