@@ -77,12 +77,29 @@ const contactSchema = new mongoose.Schema({
     addedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    lastMessage:{
+        type: String,
+        default: ""
+    },
+    time: {
+        type: Date,
+        default: Date.now
+    },
+    unread: {
+        type: Number,
+        default: 0
+    },
+    status: {
+        type: String,
+        default: 'offline'
+    },
+    active: {type:Boolean, default: false},
 });
 
 // Ensure a user can't add the same contact twice
 contactSchema.index({ owner: 1, recipient: 1 }, { unique: true });
 
-const contactsModel =  mongoose.model('Contact', contactSchema);
+const ContactsModel =  mongoose.model('Contact', contactSchema);
 
-export default contactsModel;
+export default ContactsModel;

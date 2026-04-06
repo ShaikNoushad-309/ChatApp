@@ -19,7 +19,7 @@ const Demo = () => {
     ];
 
     return (
-        <section className="bg-white py-20">
+        <section className="bg-white py-20 hidden sm:block">
             <div className="max-w-7xl mx-auto px-4">
                 <h2 className="text-4xl font-bold text-center mb-12 relative">
                     See How It Works

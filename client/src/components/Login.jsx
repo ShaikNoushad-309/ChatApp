@@ -1,19 +1,34 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import connectImg from '../assets/connect.png';
 import { FaArrowLeftLong } from "react-icons/fa6";
 import {useForm} from 'react-hook-form';
 import axios from "axios";
 import useStore from "../store/AppStore.js";
-import {toast} from "react-toastify";
+import {Bounce, toast, ToastContainer} from "react-toastify";
 import useUserActions from "../store/useUserActions.js";
 
 const LoginPage = () => {
     const [isLogin, setIsLogin] = useState(true);
     const backendUrl = useStore(state => state.backendUrl);
     const setIsLoggedIn = useStore(state => state.setIsLoggedIn);
+    const isLoggedIn = useStore(state => state.isLoggedIn);
     const {getUserData} = useUserActions();
     const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     if(isLoggedIn) {
+    //         navigate('/');
+    //     }
+    // }, []);
+
+    useEffect(() => {
+        if(isLoggedIn) {
+            navigate('/');
+        }
+    });
+
+
 
     const [formData, setFormData] = useState({
         username: '',
@@ -36,22 +51,29 @@ const LoginPage = () => {
     //     });
     // };
 
-    const onSubmit = async (data) => {
-        console.log('Form submitted:', data);
-        const newFormData = {...formData,...data};
+    const onSubmit = async (fData) => {
+        console.log('Form submitted:', fData);
+        const newFormData = {...formData,...fData};
         setFormData(newFormData);
         console.log('New Form data submitted:', newFormData);
         if(isLogin){
             console.log('Login');
-            const {data} = await axios.post(`${backendUrl}/api/auth/login`,newFormData);
-            console.log(data);
-            if(data.success){
-               await getUserData();
-                setIsLoggedIn(true);
-                navigate('/');
-            }else{
-                toast.error(data.message);
+            try{
+                const {data} = await axios.post(`${backendUrl}/api/auth/login`,newFormData);
+                console.log("Data in Login.jsx:",data);
+                if(data.success ){
+                    await getUserData();
+                    setIsLoggedIn(true);
+                    navigate('/');
+                }else{
+                    toast.error(data.message);
+                }
+            }catch (err) {
+                console.error("Error in login:",err.message);
+                toast.error("Check your credentials and try again");
             }
+            // const {data} = await axios.post(`${backendUrl}/api/auth/login`,newFormData);
+            // console.log("Data in Login.jsx:",data);
         }else{
             try {
                 console.log('Signup');
@@ -74,6 +96,20 @@ const LoginPage = () => {
 
     return (
         <div className="w-screen h-auto lg:h-screen flex flex-col lg:flex-row gap-3 lg:gap-0  bg-gray-50">
+
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition={Bounce}
+            />
 
             {/* Left Section - Visual */}
             <div className="flex w-full lg:w-1/2 h-1/3 lg:h-full  flex-col justify-center items-center bg-gradient-to-br from-blue-500 to-purple-600 p-8 relative">
@@ -103,7 +139,7 @@ const LoginPage = () => {
                         <div className="bg-gray-100 rounded-full p-1 flex">
                             <button
                                 onClick={() => setIsLogin(true)}
-                                className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                                className={`cursor-pointer px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
                                     isLogin
                                         ? 'bg-blue-600 text-white shadow-lg'
                                         : 'text-gray-600 hover:text-gray-800'
@@ -113,7 +149,7 @@ const LoginPage = () => {
                             </button>
                             <button
                                 onClick={() => setIsLogin(false)}
-                                className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                                className={`cursor-pointer px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
                                     !isLogin
                                         ? 'bg-blue-600 text-white shadow-lg'
                                         : 'text-gray-600 hover:text-gray-800'
@@ -178,7 +214,7 @@ const LoginPage = () => {
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                 placeholder="Enter your password"
                                 {...register('password',{  required:{value:true,message:'password is required'},
-                                    minLength: { value: 10, message: "password must be at least 10 characters long"},
+                                    minLength: { value: 5, message: "password must be at least 5 characters long"},
                                     maxLength: { value: 20, message: "password must be at most 20 characters long" }
                                 })}
                             />
@@ -205,21 +241,21 @@ const LoginPage = () => {
                         {/*    </div>*/}
                         {/*)}*/}
 
-                        {isLogin && (
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center">
-                                    <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                                    <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                                </label>
-                                <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
-                                    Forgot password?
-                                </a>
-                            </div>
-                        )}
+                        {/*{isLogin && (*/}
+                        {/*    <div className="flex items-center justify-between">*/}
+                        {/*        <label className="flex items-center">*/}
+                        {/*            <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />*/}
+                        {/*            <span className="ml-2 text-sm text-gray-600">Remember me</span>*/}
+                        {/*        </label>*/}
+                        {/*        <a href="#" className="text-sm text-blue-600 hover:text-blue-500">*/}
+                        {/*            Forgot password?*/}
+                        {/*        </a>*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
 
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 shadow-lg hover:shadow-xl"
+                            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
                         >
                             {isLogin ? 'Login to Your Account' : 'Create Account'}
                         </button>

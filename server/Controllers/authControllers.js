@@ -35,7 +35,9 @@ export const login = async (req,res)=> {
         return res.status(400).json({success: false, message: "Please provide all the required fields"});
     }
     try{
-        const existingUser = await UserModel.findOne({"email":email});
+        // const existingUser = await UserModel.findOne({"email":email});
+
+        const existingUser = await UserModel.findOne({"email":email,"password":password}); // left here!!!!!!
 
         // const existingUser = await UserModel.findOne(
         //     {"userCredentials.email":email},

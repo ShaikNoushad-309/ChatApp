@@ -6,18 +6,27 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+import {Server} from "socket.io";
+import socketHandler from "./sockets/socketHandler.js";
 
 const app = express();
-const port = 3002;
-const server = http.createServer(app);
+const port = 3000;
+const httpServer = http.createServer(app);
+
+console.log("Start");
+
 const allowedOrigins = [
     "http://localhost:5173",
+    "http://localhost:5175",
     "http://localhost:5174",
     "http://localhost:3000",
     "http://localhost:3001",
     "http://localhost:3002",
     // All front-end url's that are to be allowed by cors
 ]
+
 connectDB();
 dotenv.config();
 
@@ -45,7 +54,13 @@ app.post('/about', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users',userRoutes);
+app.use('/api/contacts',contactRoutes);
+app.use('/api/messages',messageRoutes);
 
-server.listen(port, () => {
+export const io = new Server(httpServer,{cors:{origin:"*"}});
+
+socketHandler();
+
+httpServer.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

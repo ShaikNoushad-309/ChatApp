@@ -4,6 +4,7 @@ import Home from './components/Home.jsx';
 import Login from './components/Login.jsx';
 import ChatApp from './chatComponents/ChatApp.jsx';
 import useUserActions from "./store/useUserActions.js";
+import ProtectChat from "./chatComponents/ProtectChat.jsx";
 
 const App = () => {
     const {getAuthState} =useUserActions();
@@ -17,13 +18,13 @@ const App = () => {
            <Routes>
                <Route path="/" element={<Home/>} />
                <Route path="/login" element={<Login/>}/>
-               {/*<Route path="/chatapp" element={*/}
-               {/*    <ProtectChat>*/}
-               {/*        <ChatApp/>*/}
-               {/*    </ProtectChat>*/}
-               {/*} />*/}
+               <Route path="/chatapp" element={
+                   <ProtectChat>
+                       <ChatApp/>
+                   </ProtectChat>
+               } />
 
-               <Route path="/chatapp" element={<ChatApp/>} />
+               {/*<Route path="/chatapp" element={<ChatApp/>} />*/}
            </Routes>
        </Router>
     );
